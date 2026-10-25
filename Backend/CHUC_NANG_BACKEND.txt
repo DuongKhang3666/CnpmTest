@@ -1,0 +1,124 @@
+========================================================================
+        HỆ THỐNG THUYẾT MINH ĐA NGÔN NGỮ - BACKEND ADMIN
+              DANH SÁCH CHỨC NĂNG HIỆN CÓ
+        (Cập nhật: 25/10/2026)
+========================================================================
+
+1. CÔNG NGHỆ SỬ DỤNG
+------------------------------------------------------------------------
+- Java 21 + Spring Boot 4.1.1 (Maven)
+- Spring Security + JWT (Stateless, vai trò ROLE_ADMIN)
+- Spring Data JPA + Hibernate (H2 in-memory cho dev, MySQL/PostgreSQL cho prod)
+- springdoc OpenAPI (Swagger UI tại /swagger-ui.html)
+- Cổng mặc định: 8080
+
+2. ĐĂNG NHẬP / XÁC THỰC (/api/auth)
+------------------------------------------------------------------------
+- POST /api/auth/login              : Đăng nhập bằng email + mật khẩu,
+                                      trả về token JWT
+- Tài khoản admin mặc định được seed khi khởi động lần đầu
+
+3. DASHBOARD - THỐNG KÊ TỔNG QUAN (/api/admin/dashboard)
+------------------------------------------------------------------------
+- GET /api/admin/dashboard/stats    : Thống kê nội dung:
+                                      + Tổng số Địa điểm, Hiện vật, Admin
+                                      + Số Địa điểm / Bảo tàng theo loại
+                                      + Số nội dung theo trạng thái
+                                        (Đã xuất bản / Chờ duyệt / Bản nháp)
+                                      + 10 nội dung mới nhất
+                                      + Biểu đồ nội dung tạo mới theo ngày
+                                        (7 và 30 ngày gần nhất)
+                                      + Phân bố trạng thái (biểu đồ tròn)
+- GET /api/admin/dashboard/usage    : SỐ NGƯỜI SỬ DỤNG TRONG NGÀY:
+                                      + Số người sử dụng duy nhất hôm nay
+                                      + Tổng lượt truy cập hôm nay
+                                      + Tổng toàn hệ thống
+                                      + Biểu đồ số người theo ngày
+                                        (7 và 30 ngày gần nhất)
+                                      (Tự động ghi nhận lượt truy cập mọi
+                                       request /api/** ; Frontend có thể
+                                       gửi header X-Visitor-Id để nhận diện)
+- GET /api/admin/dashboard/sales    : SỐ LƯỢNG ĐÃ BÁN CHO KHÁCH HÀNG:
+                                      + Tổng số lượng đã bán, tổng doanh thu
+                                      + Số lượng / doanh thu hôm nay
+                                      + Biểu đồ số lượng bán theo ngày
+                                        (7 và 30 ngày gần nhất)
+                                      + Top 5 sản phẩm bán chạy
+                                      (Không tính các đơn đã bị hủy)
+
+4. QUẢN LÝ ĐỊA ĐIỂM / BẢO TÀNG (/api/admin/places)
+------------------------------------------------------------------------
+- GET    /api/admin/places          : Danh sách (tìm kiếm theo q, lọc theo
+                                      loại, lọc theo trạng thái, phân trang)
+- GET    /api/admin/places/{id}     : Chi tiết theo ID
+- POST   /api/admin/places          : Tạo mới (mã tự sinh DD-xxx / BT-xxx)
+- PUT    /api/admin/places/{id}     : Cập nhật toàn bộ thông tin
+- PATCH  /api/admin/places/{id}/status : Duyệt / đổi trạng thái xuất bản
+- DELETE /api/admin/places/{id}     : Xóa (kèm các hiện vật thuộc về)
+
+5. QUẢN LÝ HIỆN VẬT (/api/admin/artifacts)
+------------------------------------------------------------------------
+- GET    /api/admin/artifacts          : Danh sách (tìm kiếm, lọc theo
+                                         vị trí, trạng thái, phân trang)
+- GET    /api/admin/artifacts/{id}     : Chi tiết theo ID
+- POST   /api/admin/artifacts          : Tạo mới
+- PUT    /api/admin/artifacts/{id}     : Cập nhật thông tin
+- PATCH  /api/admin/artifacts/{id}/status : Duyệt / đổi trạng thái
+- DELETE /api/admin/artifacts/{id}     : Xóa
+
+6. QUẢN LÝ ẢNH / MEDIA (/api/admin/media)
+------------------------------------------------------------------------
+- POST   /api/admin/media           : Upload nhiều ảnh (multipart/form-data)
+- POST   /api/admin/media/single    : Upload 1 ảnh
+- DELETE /api/admin/media/{fileUrl} : Xóa 1 file ảnh theo URL
+- DELETE /api/admin/media           : Xóa nhiều file ảnh cùng lúc
+- Ảnh sau upload được phục vụ tại: /uploads/...
+
+7. BÁN SẢN PHẨM CHO KHÁCH HÀNG (/api/admin)
+------------------------------------------------------------------------
+7a. Sản phẩm (/api/admin/products)
+- GET    /api/admin/products        : Danh sách sản phẩm (tìm kiếm, lọc
+                                      còn bán hay không, phân trang)
+- GET    /api/admin/products/{id}   : Chi tiết sản phẩm
+- POST   /api/admin/products        : Tạo sản phẩm (mã SP-... tự sinh;
+                                      có giá bán, tồn kho, gắn địa điểm)
+- PUT    /api/admin/products/{id}   : Cập nhật sản phẩm
+- DELETE /api/admin/products/{id}   : Xóa sản phẩm
+
+7b. Đơn hàng (/api/admin/orders)
+- GET    /api/admin/orders          : Danh sách đơn hàng (tìm kiếm theo
+                                      mã đơn/tên/SĐT khách, lọc trạng thái,
+                                      phân trang)
+- GET    /api/admin/orders/{id}     : Chi tiết đơn hàng (kèm từng dòng bán)
+- POST   /api/admin/orders          : Tạo đơn bán cho khách hàng:
+                                      + Kiểm tra sản phẩm còn bán, trừ tồn kho
+                                      + Tính tổng tiền tự động
+                                      + Mã đơn DH-yyyyMMddHHmmss-xxxx tự sinh
+- PATCH  /api/admin/orders/{id}/status : Đổi trạng thái đơn
+                                      (PENDING / PROCESSING / COMPLETED /
+                                       CANCELLED - hủy đơn hoàn lại tồn kho)
+- DELETE /api/admin/orders/{id}     : Xóa đơn (hoàn tồn kho nếu chưa hủy)
+
+8. NHẬT KÝ THAO TÁC - AUDIT LOG (/api/admin/audit-logs)
+------------------------------------------------------------------------
+- GET /api/admin/audit-logs                          : Tra cứu log với bộ lọc
+  (adminEmail, loại, hành động, khoảng thời gian, phân trang)
+- GET /api/admin/audit-logs/recent                   : 20 thao tác gần nhất
+- GET /api/admin/audit-logs/entity/{entityType}/{entityId} :
+  Lịch sử thao tác của 1 đối tượng cụ thể
+- Tự động ghi: ai (email), làm gì (CREATE/UPDATE/DELETE/STATUS_CHANGE/LOGIN),
+  đối tượng nào, khi nào, chi tiết giá trị cũ/mới, IP, User-Agent
+
+9. BẢO MẬT & CẤU HÌNH
+------------------------------------------------------------------------
+- Tất cả /api/admin/** yêu cầu JWT với vai trò ADMIN
+- /api/auth/**, Swagger, H2 console, /uploads/** là public
+- CORS cho Frontend ở http://localhost:5173 và http://localhost:3000
+- Xử lý lỗi tập trung, thông báo tiếng Việt chuẩn hóa
+- Cấu hình qua biến môi trường (JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD, ...)
+
+10. TEST
+------------------------------------------------------------------------
+- 39 test tự động (JUnit + MockMvc) cho: Auth, Dashboard, Place, Artifact,
+  Media, Sản phẩm, Đơn hàng, Thống kê người dùng/thống kê bán hàng
+- Chạy bằng: mvnw.cmd test
