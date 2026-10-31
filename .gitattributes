@@ -1,0 +1,3 @@
+# Script Windows: giu nguyen ky tu xuong dong CRLF (khong tu chuyen doi)
+*.bat -text
+*.ps1 -text

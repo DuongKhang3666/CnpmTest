@@ -31,8 +31,21 @@ Drawio/           Sơ đồ use case, hoạt động, tuần tự (Draw.io + ngu
 docs/             Kết quả kiểm thử
 Prd.docx          Tài liệu yêu cầu, thiết kế và kiểm thử
 docker-compose.yml  MySQL + Backend (+ LibreTranslate khi bật profile "translate")
+chay-demo-docker.bat  Chạy thử trên Windows bằng một cú nhấp đúp (Docker + web); mo-firewall-lan.ps1 mở cổng cho điện thoại
 .github/workflows/ci.yml   CI/CD: build, test, smoke test docker compose, đẩy image lên ghcr.io
 ```
+
+## Chạy thử nhanh trên Windows (nhấp đúp một file)
+Cần Docker Desktop (đang chạy) và Node.js LTS. Nhấp đúp `chay-demo-docker.bat` ở thư mục gốc: script tự tạo `.env` (mật khẩu quản trị
+ngẫu nhiên, in ra màn hình), dựng MySQL + Backend bằng Docker, cài và chạy giao diện web rồi mở trình duyệt vào trang quản trị.
+Lần đầu mất vài phút vì phải tải image và build Backend.
+- Kèm dịch máy: `chay-demo-docker.bat -Translate` (lần đầu tải mô hình ngôn ngữ, mất thêm vài phút).
+- Tắt hệ thống: đóng cửa sổ "Web 5173", rồi chạy `chay-demo-docker.bat -Stop`.
+- Điện thoại cùng Wi-Fi không vào được: chạy `mo-firewall-lan.ps1` bằng quyền Administrator (mở PowerShell bằng "Run as administrator",
+  làm theo hướng dẫn ở đầu file).
+- Nếu Windows báo SmartScreen vì file tải từ Internet: chọn "More info" rồi "Run anyway".
+
+Không dùng Windows hoặc muốn tự chạy từng bước thì làm theo hai mục dưới đây.
 
 ## Chạy nhanh bằng Docker (Backend + MySQL)
 Cần Docker Desktop (hoặc Docker Engine) và Node.js LTS.
