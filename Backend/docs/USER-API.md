@@ -94,6 +94,8 @@ Thứ tự lấy bản dịch: bản dịch admin nhập trong `narrations.trans
 Văn bản thuyết minh (mô tả hoặc nội dung riêng) luôn là tiếng Việt (`sourceLanguage` = `vi`). Cột `narrations.language` là ngôn ngữ cấu hình của thuyết minh
 (ngôn ngữ mặc định khi không truyền `lang`, key TTS, ngôn ngữ của file audio), không phải ngôn ngữ của văn bản: người nghe chọn khác `vi` thì luôn được dịch,
 còn audio chỉ phát khi chọn đúng ngôn ngữ của thuyết minh.
+Bản dịch tay mẫu (địa điểm 1, 2, 3, 6 và hiện vật 1, mỗi mục en/fr/ja/zh-CN/ko/th) nằm ở `Backend/sql/sample-translations.sql` (tuỳ chọn, không tự nạp, do AI soạn nên cần người bản ngữ rà soát):
+`mysql -u root -p --default-character-set=utf8mb4 commentary_db < Backend/sql/sample-translations.sql`. Đã kiểm tra với Backend + MySQL 8: cả 30 bản dịch trả đúng từng ký tự, `translated=true`, kể cả khi LibreTranslate tắt.
 Nếu dịch lỗi vẫn trả văn bản gốc với `translated=false` và `translationError` (đúng luồng phụ của UC7.4).
 `audioUrl` chỉ có khi nghe đúng ngôn ngữ gốc của file audio.
 
