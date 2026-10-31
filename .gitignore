@@ -27,3 +27,9 @@ Frontend/mobile/.env
 
 # Biến môi trường chứa mật khẩu/khoá (đã có .env.example)
 .env
+
+# Tệp tạm/sao lưu còn sót lại từ json-server cũ (không đưa lên git)
+Frontend/src/devices.json
+Frontend/db.backup.json
+Frontend/.db-temp.backup.json
+Frontend/.~db.json
