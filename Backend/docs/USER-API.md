@@ -184,6 +184,11 @@ docker compose up -d --build  # ở thư mục gốc: MySQL + backend (cổng 30
   `POST /translate` theo lô (tối đa 50 đoạn/lần) cho giao diện, tên, địa chỉ. Nếu admin đã tải audio và ngôn ngữ nghe trùng ngôn ngữ
   bản thu thì `audioUrl` được trả về và web/app phát file audio đó; ngôn ngữ khác hoặc lỗi audio thì đọc bằng giọng tổng hợp (TTS).
 - Mã QR trong trang admin được vẽ ngay trên trình duyệt (`qrcode.react`), không gọi `api.qrserver.com`, dùng được khi mạng LAN không có Internet.
-- Chưa thử với LibreTranslate thật (mới thử với bản giả lập): cần chạy `docker compose --profile translate up`. Không có thì trả bản gốc kèm `translated=false`.
+- Đã thử với LibreTranslate thật (bản 1.9.6 cài bằng `pip` trên Python 3.11, `--load-only vi,en,fr,ja,ko,zh,th`) qua `POST /api/user/translate`:
+  vi→en, ja, zh (và `zh-Hans`) đều trả 200 với `translated=true`; ví dụ "Bảo tàng Lịch sử" → "History Museum" / 歴史博物館 / 历史博物馆.
+  LibreTranslate dùng mã `zh-Hans`, Back-end nhận cả `zh` lẫn `zh-Hans`. Câu rất ngắn dịch chưa tốt (vd "Xin chào" → ja ra "お問い合わせ").
+  Cách chạy bằng Docker (`docker compose --profile translate up`) chưa được thử trọn vẹn: cấu hình `LT_LOAD_ONLY` đã đối chiếu với mã nguồn LibreTranslate 1.9.6
+  (biến môi trường = tiền tố `LT_` + tên cờ, cùng danh sách mã ngôn ngữ như cờ `--load-only` đã chạy thật), còn job CI chạy compose với `TRANSLATE_ENABLED=false`.
+  Không có LibreTranslate thì trả bản gốc kèm `translated=false`.
 - Bảng `devices` cũ (json-server) không còn được cập nhật; `server.mjs` (Node) không còn cần cho trang web lẫn app mobile.
 - API admin CRUD cũ đã được bảo vệ bằng đăng nhập admin (xem *Bảo mật API quản trị*). Mật khẩu admin hiện đọc từ biến môi trường (chưa có bảng người dùng / đổi mật khẩu trên giao diện).
