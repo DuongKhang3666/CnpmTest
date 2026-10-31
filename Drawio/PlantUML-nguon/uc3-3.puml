@@ -1,0 +1,61 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+|Admin|
+start
+:Truy cập Quản lý ngôn ngữ;
+|Hệ thống|
+:Tải và hiển thị danh sách ngôn ngữ;
+|Admin|
+:Chọn thao tác (Thêm / Sửa / Xóa);
+if (Thao tác là gì?) then (Xóa)
+  :Chọn ngôn ngữ\nvà nhấn Xóa;
+  |Hệ thống|
+  :Yêu cầu xác nhận xóa;
+  |Admin|
+  :Xác nhận xóa;
+  |Hệ thống|
+  :Xóa ngôn ngữ\nkhỏi cơ sở dữ liệu;
+else (Thêm / Sửa)
+  |Admin|
+  :Nhập tên, mã ngôn ngữ, key TTS\n(bật/tắt trạng thái nếu cần);
+  :Nhấn Lưu;
+  |Hệ thống|
+  :Kiểm tra dữ liệu trống\nvà trùng mã ngôn ngữ;
+  if (Dữ liệu hợp lệ?) then (Đúng)
+    :Lưu vào cơ sở dữ liệu;
+  else (Sai)
+    :Thông báo lỗi\n(thiếu thông tin / mã đã tồn tại);
+    stop
+  endif
+endif
+:Thông báo thành công;
+:Tải lại danh sách ngôn ngữ;
+stop
+
+@enduml

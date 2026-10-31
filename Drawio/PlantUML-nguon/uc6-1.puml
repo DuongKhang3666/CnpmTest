@@ -1,0 +1,48 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+left to right direction
+skinparam packageStyle rectangle
+actor Admin
+rectangle "Phân hệ Quản lý báo cáo" {
+  usecase "UC6.1: Thống kê lượt nghe" as UC61
+  usecase "UC6.2: Thống kê địa điểm,\nhiện vật" as UC62
+  usecase "UC6.3: Thống kê người\nđang dùng hệ thống" as UC63
+  usecase "UC6.4: Dashboard báo cáo\nkhám phá theo ngày" as UC64
+  usecase "Chọn nội dung / ngày cần xem" as UC65
+}
+Admin --> UC61
+Admin --> UC62
+Admin --> UC63
+Admin --> UC64
+UC61 .> UC65 : <<extend>>
+UC62 .> UC65 : <<extend>>
+UC64 .> UC65 : <<extend>>
+
+@enduml

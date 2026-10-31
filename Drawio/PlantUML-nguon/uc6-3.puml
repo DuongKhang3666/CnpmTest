@@ -1,0 +1,49 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+|Admin|
+start
+:Chọn chức năng báo cáo\n(lượt nghe / địa điểm, hiện vật /\nngười đang dùng / tổng quan theo ngày);
+|Hệ thống|
+:Truy xuất dữ liệu tương ứng\n(lượt nghe, nội dung, phiên truy cập);
+if (Có dữ liệu?) then (Có)
+  |Admin|
+  :Chọn nội dung hoặc ngày cần xem (nếu cần);
+  |Hệ thống|
+  :Tổng hợp số liệu theo lựa chọn;
+  :Hiển thị bảng số liệu và biểu đồ\n(cột kết hợp đường);
+  |Admin|
+  :Xem kết quả thống kê;
+else (Chưa có)
+  |Hệ thống|
+  :Thông báo chưa có dữ liệu\n(người đang dùng: hiển thị 0);
+endif
+stop
+
+@enduml

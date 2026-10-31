@@ -1,0 +1,58 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+actor "Người dùng" as User
+participant "Ứng dụng\n(web / mobile)" as APP
+participant SessionInterceptor as SI
+participant UserNarrationController as NC
+participant NarrationService as NS
+database MySQL as DB
+note over APP : Danh sách địa điểm, hiện vật, thuyết minh\n(kèm mã QR) đã được tải sẵn qua GET /api/user/catalog
+User -> APP : Chọn "Quét QR", đưa mã vào khung hình
+APP -> APP : Đọc nội dung mã QR
+alt Mã là đường link .../play?type=site&id=1&lang=vi
+  APP -> APP : Tách type, id, lang từ đường link
+else Mã là mã nội dung (ví dụ DD-1) hoặc mã đối tượng
+  APP -> APP : Đối chiếu với catalog (qr.code, id)
+end
+alt Không nhận diện được đối tượng
+  APP --> User : Thông báo "Không tìm thấy địa điểm / hiện vật cho mã này"
+else Nhận diện được đối tượng
+  APP -> SI : GET /api/user/narrations/{type}/{id}?lang=...
+  SI -> SI : Kiểm tra X-Device-Id, X-Session-Token
+  SI -> NC : Phiên hợp lệ
+  NC -> NS : get(type, id, lang)
+  NS -> DB : Đọc nội dung thuyết minh (và dịch nếu cần)
+  DB --> NS : Narration
+  NS --> NC : NarrationDto
+  NC --> APP : 200 JSON
+  APP --> User : Hiển thị nội dung và phát thuyết minh
+end
+
+@enduml

@@ -1,0 +1,63 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+actor "Người dùng" as User
+participant "Ứng dụng\n(web / mobile)" as APP
+participant SessionInterceptor as SI
+participant UserActivityController as AC
+participant ActivityService as AS
+participant ContentService as CS
+participant ListenRepository as LR
+participant UserHistoryRepository as HR
+database MySQL as DB
+User -> APP : Nhấn nút nghe thuyết minh
+APP --> User : Phát thuyết minh
+APP -> SI : POST /api/user/listens {targetType, targetId, language}
+SI -> SI : Kiểm tra X-Device-Id, X-Session-Token
+SI -> AC : Phiên hợp lệ
+AC -> AS : recordListen(request)
+AS -> CS : visibleTarget(type, id)
+alt Đối tượng không tồn tại hoặc đã ẩn
+  CS --> AS : Optional rỗng -> ResourceNotFoundException
+  AS --> AC : Lỗi
+  AC --> APP : 404
+else Hợp lệ
+  AS -> LR : increment(date, type, id, language)
+  LR -> DB : Tăng bộ đếm lượt nghe
+  AC --> APP : 200
+  APP -> SI : POST /api/user/history {targetType, targetId, language, method}
+  SI -> AC : Phiên hợp lệ
+  AC -> AS : addHistory(session, request)
+  AS -> HR : add(deviceId, type, id, name, language, method, time)
+  HR -> DB : INSERT lịch sử nghe
+  AC --> APP : 200
+  APP --> User : Cập nhật mục "Lịch sử nghe"
+end
+
+@enduml

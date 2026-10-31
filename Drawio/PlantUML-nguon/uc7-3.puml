@@ -1,0 +1,58 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+|Người dùng|
+start
+:Chọn ngôn ngữ;
+if (Cách nghe thuyết minh?) then (Tự động)
+  :Bật GPS / Bluetooth\nvà cấp quyền;
+  |Hệ thống|
+  :Theo dõi vị trí hoặc\nquét Beacon liên tục;
+  if (Vào vùng GPS / gần Beacon\nvà chưa phát trong lần này?) then (Có)
+  else (Không)
+    :Không phát thuyết minh;
+    stop
+  endif
+else (Thủ công / QR)
+  |Người dùng|
+  :Chọn địa điểm, hiện vật\nhoặc quét mã QR;
+  |Hệ thống|
+  :Nhận diện đối tượng;
+endif
+:Lấy nội dung thuyết minh theo ngôn ngữ\n(bản admin nhập > cache > dịch máy);
+if (Có audio admin tải lên\nđúng ngôn ngữ bản thu?) then (Có)
+  :Phát file audio;
+else (Không)
+  :Đọc bằng giọng tổng hợp (TTS);
+endif
+:Ghi lượt nghe và lịch sử nghe;
+|Người dùng|
+:Nghe thuyết minh\n(tạm dừng / tiếp tục / bỏ qua);
+stop
+
+@enduml

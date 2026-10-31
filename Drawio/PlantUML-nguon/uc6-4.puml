@@ -1,0 +1,65 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+actor Admin
+participant "Trang Tổng quan /\nThống kê (UI)" as UI
+participant AdminAuthInterceptor as AUTH
+participant JsonServerController as CTL
+participant JsonResourceService as SVC
+participant AdminAccessController as ACC
+participant AccessAdminService as AAS
+database "MySQL" as DB
+Admin -> UI : Mở "Tổng quan", chọn ngày cần xem
+activate UI
+par Dữ liệu nội dung và lượt nghe
+  UI -> AUTH : GET /listens, /sites, /artifacts, /narrations, /languages
+  AUTH -> CTL : Token hợp lệ
+  CTL -> SVC : getCollection(resource)
+  SVC -> DB : SELECT (qua JsonResourceRepository)
+  DB --> SVC : Danh sách bản ghi
+  SVC --> CTL : Danh sách bản ghi
+  CTL --> UI : 200 JSON
+else Người đang dùng hệ thống
+  UI -> AUTH : GET /api/admin/access/overview
+  AUTH -> ACC : Token hợp lệ
+  ACC -> AAS : overview()
+  AAS -> DB : Đọc phiên thiết bị (device_sessions)
+  DB --> AAS : Danh sách thiết bị, trạng thái trực tuyến
+  AAS --> ACC : AccessOverview
+  ACC --> UI : 200 JSON
+end
+alt Có dữ liệu trong ngày chọn
+  UI -> UI : Tổng hợp theo ngày, tính số lượt nghe, địa điểm, hiện vật
+  UI --> Admin : Hiển thị biểu đồ cột + đường và số liệu
+else Không có dữ liệu
+  UI --> Admin : "Chưa có dữ liệu" (người đang dùng = 0)
+end
+deactivate UI
+
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+|Người dùng|
+start
+:Chọn chức năng\n(nghe / xem lịch sử / xem yêu thích / thêm-bỏ yêu thích);
+|Hệ thống|
+if (Chức năng nào?) then (Nghe thuyết minh)
+  :Phát nội dung thuyết minh;
+  :Ghi lịch sử nghe\nvà tăng lượt nghe;
+elseif () then (Xem lịch sử)
+  :Truy vấn và hiển thị danh sách\nđã nghe (mới nhất trước);
+elseif () then (Xem yêu thích)
+  :Tải và hiển thị\ndanh sách yêu thích;
+else (Thêm / bỏ yêu thích)
+  if (Nội dung đã được yêu thích?) then (Rồi)
+    :Xóa khỏi danh sách yêu thích;
+  else (Chưa)
+    :Thêm vào danh sách yêu thích;
+  endif
+  :Cập nhật biểu tượng và thông báo;
+endif
+if (Thao tác thành công?) then (Có)
+  :Hiển thị kết quả cho người dùng;
+else (Lỗi mạng / phiên hết hạn)
+  :Thông báo lỗi kết nối hoặc\nyêu cầu quét lại QR đăng nhập;
+endif
+stop
+
+@enduml

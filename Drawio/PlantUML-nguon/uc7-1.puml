@@ -1,0 +1,52 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+left to right direction
+skinparam packageStyle rectangle
+actor "Người dùng" as User
+rectangle "Phân hệ Thuyết minh tự động" {
+  usecase "UC7.1: Nghe thuyết minh\ntự động" as UC71
+  usecase "UC7.1.1: Tự động bằng GPS" as UC711
+  usecase "UC7.1.2: Tự động bằng Bluetooth" as UC712
+  usecase "UC7.2: Thuyết minh thủ công" as UC72
+  usecase "UC7.2.1: Nghe bằng QR code" as UC721
+  usecase "UC7.3: Lựa chọn ngôn ngữ" as UC73
+  usecase "UC7.4: Dịch nội dung\nvà giao diện" as UC74
+}
+User --> UC71
+User --> UC72
+User --> UC73
+UC711 .> UC71 : <<extend>>
+UC712 .> UC71 : <<extend>>
+UC721 .> UC72 : <<extend>>
+UC71 .> UC74 : <<include>>
+UC72 .> UC74 : <<include>>
+UC73 .> UC74 : <<extend>>
+
+@enduml

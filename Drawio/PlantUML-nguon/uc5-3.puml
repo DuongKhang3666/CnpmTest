@@ -1,0 +1,60 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+|Admin|
+start
+:Chọn chức năng cấu hình;
+|Hệ thống|
+:Hiển thị giao diện cấu hình;
+|Admin|
+:Chọn địa điểm hoặc hiện vật;
+|Hệ thống|
+:Hiển thị thông tin đối tượng;
+|Admin|
+if (Loại cấu hình?) then (QR code)
+  :Chọn ngôn ngữ của mã\nvà yêu cầu tạo mã QR;
+elseif () then (GPS)
+  :Chọn vị trí trên bản đồ,\nnhập toạ độ và bán kính;
+else (Bluetooth)
+  :Nhập tên thiết bị / MAC Beacon\nvà bán kính nhận diện;
+endif
+|Hệ thống|
+:Tạo mã QR hoặc hiển thị\nvùng GPS / thiết bị Beacon;
+|Admin|
+:Kiểm tra và xác nhận lưu;
+|Hệ thống|
+:Kiểm tra dữ liệu cấu hình;
+if (Hợp lệ?) then (Đúng)
+  :Lưu cấu hình vào cơ sở dữ liệu;
+  :Thông báo lưu thành công;
+else (Sai)
+  :Thông báo lỗi\nvà yêu cầu chỉnh sửa;
+endif
+stop
+
+@enduml
