@@ -3169,6 +3169,22 @@ function AdminDashboard({ onLogout }) {
 
   const { sites, artifacts, narrations, languages, listens } = data;
 
+  // "Xem ứng dụng": mở trang hành khách (/user) ở tab mới, tự vào bằng mã QR hiện tại.
+  // Phải mở tab ngay trong cú nhấp chuột, nếu không trình duyệt sẽ chặn cửa sổ bật lên.
+  const openUserApp = async () => {
+    const tab = window.open("about:blank", "_blank");
+    if (!tab) {
+      setNotice("Trình duyệt đã chặn cửa sổ mới. Hãy cho phép cửa sổ bật lên cho trang này rồi thử lại.");
+      return;
+    }
+    try {
+      tab.location.href = await api.getUserAppLink();
+    } catch (err) {
+      tab.close();
+      setNotice(`Lỗi: ${err.message}`);
+    }
+  };
+
   // Chạy 1 thao tác API -> nạp lại dữ liệu -> báo kết quả. Trả về true/false.
   const run = async (fn, okMsg) => {
     try {
@@ -3630,7 +3646,7 @@ function AdminDashboard({ onLogout }) {
           <p>Xem nội dung đang hiển thị trên ứng dụng.</p>
           <button
             type="button"
-            onClick={() => setNotice("Chưa cấu hình liên kết ứng dụng.")}
+            onClick={openUserApp}
           >
             Mở ứng dụng ↗
           </button>
@@ -3650,7 +3666,7 @@ function AdminDashboard({ onLogout }) {
           <div className="admin-user">
             <button
               type="button"
-              onClick={() => setNotice("Chưa cấu hình liên kết ứng dụng.")}
+              onClick={openUserApp}
             >
               Xem ứng dụng ↗
             </button>

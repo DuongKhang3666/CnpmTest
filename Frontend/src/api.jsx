@@ -132,4 +132,11 @@ export async function searchPlace(query) {
 export const buildQrLink = ({ targetType, targetId, language }) =>
   `${USER_APP_URL}/play?type=${targetType}&id=${targetId}&lang=${language}&autoplay=1`;
 
+// "Xem ứng dụng": link vào thẳng trang hành khách (/user) bằng mã QR hiện tại của hệ thống
+export async function getUserAppLink() {
+  const res = await request("/api/admin/access/qr");
+  if (!res?.token) throw new Error("Không lấy được mã QR để mở ứng dụng.");
+  return `${USER_APP_URL}/user?token=${encodeURIComponent(res.token)}`;
+}
+
 // Ảnh QR được vẽ trong admin.jsx bằng qrcode.react (không dùng dịch vụ ngoài, chạy được trong mạng LAN)
