@@ -68,7 +68,7 @@ vn.commentary.backend
 │   ├─ controller/  JsonServerController (CRUD kiểu json-server), AdminAuthController (đăng nhập), AdminAccessController (QR, thiết bị)
 │   ├─ service/     JsonResourceService, AdminAuthService, AccessAdminService
 │   ├─ repository/  JsonResourceRepository (truy vấn MySQL theo whitelist bảng và metadata cột)
-│   ├─ entity/      JsonResource, ColumnDefinition
+│   ├─ entity/      ColumnDefinition (metadata cột bảng)
 │   ├─ security/    AdminAuthInterceptor, AdminTokenService (token HMAC), LoginThrottle, AdminAuthException
 │   ├─ exception/   ApiExceptionHandler (bộ xử lý lỗi mặc định của hệ thống)
 │   └─ config/      AdminWebConfig (bắt buộc đăng nhập admin), DatabaseCompatibilityInitializer

@@ -3,9 +3,6 @@ Backend/target/
 Frontend/node_modules/
 Frontend/dist/
 
-# Runtime data (ảnh upload)
-Backend/uploads/
-
 # Logs & file tạm
 Backend/*.log
 Backend/build_test.log
@@ -30,10 +27,3 @@ Frontend/mobile/.env
 
 # Biến môi trường chứa mật khẩu/khoá (đã có .env.example)
 .env
-
-# Dữ liệu chạy thử / bản sao tạm của json-server (không đưa lên git)
-Frontend/src/devices.json
-Frontend/db.backup.json
-Frontend/.db-temp.backup.json
-Frontend/.~db.json
-Frontend/uploads/

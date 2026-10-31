@@ -3,7 +3,6 @@ package vn.commentary.backend.admin.repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.commentary.backend.admin.entity.ColumnDefinition;
-import vn.commentary.backend.admin.entity.JsonResource;
 import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

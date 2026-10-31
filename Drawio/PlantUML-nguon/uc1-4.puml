@@ -1,0 +1,65 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+actor Admin
+participant "Trang Quản lý\nđịa điểm (UI)" as UI
+participant AdminAuthInterceptor as AUTH
+participant JsonServerController as CTL
+participant JsonResourceService as SVC
+participant JsonResourceRepository as REPO
+database "MySQL\n(bảng sites)" as DB
+Admin -> UI : Nhập tên, địa chỉ, mô tả, tọa độ, hình ảnh và nhấn "Xuất bản" hoặc "Lưu nháp"
+activate UI
+UI -> UI : Kiểm tra thiếu thông tin / tọa độ không hợp lệ
+alt Dữ liệu không hợp lệ
+  UI --> Admin : Hiển thị lỗi ("Vui lòng nhập tên, địa chỉ và mô tả." / "Vĩ độ hoặc kinh độ không hợp lệ.")
+else Dữ liệu hợp lệ
+  UI -> AUTH : POST /sites (Bearer token, status = published | draft)
+  activate AUTH
+  AUTH -> AUTH : Xác thực token quản trị
+  AUTH -> CTL : Chuyển yêu cầu
+  deactivate AUTH
+  activate CTL
+  CTL -> SVC : create("sites", body)
+  activate SVC
+  SVC -> REPO : insert("sites", data)
+  activate REPO
+  REPO -> DB : INSERT INTO sites
+  DB --> REPO : Bản ghi mới (id)
+  REPO --> SVC : Bản ghi đã lưu
+  deactivate REPO
+  SVC --> CTL : Bản ghi đã lưu
+  deactivate SVC
+  CTL --> UI : 201 Created
+  deactivate CTL
+  UI --> Admin : Thông báo thành công ("Đã xuất bản địa điểm." / "Đã lưu bản nháp"), tải lại danh sách
+end
+deactivate UI
+
+@enduml

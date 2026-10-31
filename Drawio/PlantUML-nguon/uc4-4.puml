@@ -1,0 +1,68 @@
+@startuml
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #222222
+skinparam ActivityBackgroundColor #EFEFEF
+skinparam ActivityBorderColor #333333
+skinparam ActivityDiamondBackgroundColor #EFEFEF
+skinparam ActivityDiamondBorderColor #333333
+skinparam ActivityBarColor #333333
+skinparam UseCaseBackgroundColor #EFEFEF
+skinparam UseCaseBorderColor #333333
+skinparam ActorBackgroundColor #EFEFEF
+skinparam ActorBorderColor #333333
+skinparam RectangleBackgroundColor white
+skinparam RectangleBorderColor #333333
+skinparam ParticipantBackgroundColor #E6E6F5
+skinparam ParticipantBorderColor #555555
+skinparam DatabaseBackgroundColor #E6E6F5
+skinparam DatabaseBorderColor #555555
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor #333333
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #888888
+skinparam dpi 170
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 220
+actor Admin
+participant "Trang Quản lý\nthuyết minh (UI)" as UI
+participant AdminAuthInterceptor as AUTH
+participant JsonServerController as CTL
+participant JsonResourceService as SVC
+participant JsonResourceRepository as REPO
+database "MySQL\n(bảng narrations)" as DB
+Admin -> UI : Chọn địa điểm / hiện vật, nhập lời thuyết minh, tải tệp audio và nhấn "Lưu"
+activate UI
+UI -> UI : Đọc tệp audio thành chuỗi base64 (audio/*, tối đa 8 MB) và kiểm tra: bật TTS hoặc audio, có lời thuyết minh, có tệp audio
+alt Dữ liệu không hợp lệ
+  UI --> Admin : Hiển thị lỗi ("Vui lòng tải lên tệp audio hoặc tắt chế độ này." ...)
+else Dữ liệu hợp lệ
+  UI -> UI : Tra thuyết minh đã có của địa điểm / hiện vật này (GET /narrations, cùng chuỗi xử lý như UC1)
+  alt Đã có thuyết minh
+    UI -> AUTH : PUT /narrations/{id} (Bearer token, kèm audioData)
+  else Chưa có thuyết minh
+    UI -> AUTH : POST /narrations (Bearer token, kèm audioData)
+  end
+  AUTH -> AUTH : Xác thực token quản trị
+  AUTH -> CTL : Chuyển yêu cầu
+  activate CTL
+  CTL -> SVC : update("narrations", id, body) hoặc create("narrations", body)
+  activate SVC
+  SVC -> REPO : update(...) hoặc insert(...)
+  activate REPO
+  REPO -> DB : UPDATE narrations ... hoặc INSERT INTO narrations (cột audioData chứa audio dạng base64)
+  DB --> REPO : Bản ghi đã lưu
+  REPO --> SVC : Bản ghi đã lưu
+  deactivate REPO
+  SVC --> CTL : Bản ghi đã lưu
+  deactivate SVC
+  CTL --> UI : 200 OK (cập nhật) hoặc 201 Created (thêm mới)
+  deactivate CTL
+  UI --> Admin : Thông báo "Đã lưu thuyết minh.", tải lại dữ liệu
+end
+deactivate UI
+
+@enduml

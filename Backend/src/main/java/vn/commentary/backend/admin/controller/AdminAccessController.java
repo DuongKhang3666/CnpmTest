@@ -23,8 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * API quản trị truy cập của thiết bị người dùng: thay cho các sự kiện Socket.IO {@code admin:*}
- * của server.mjs. Bảo vệ bằng header {@code X-Admin-Key} khi đã cấu hình {@code admin.api-key}.
+ * API quản trị truy cập của thiết bị người dùng (mã QR, danh sách thiết bị, gia hạn, thu hồi, cấu hình).
+ * Được {@code AdminAuthInterceptor} bảo vệ như mọi API quản trị: {@code Authorization: Bearer <token>}
+ * hoặc header {@code X-Admin-Key} khi đã cấu hình {@code admin.api-key}.
  */
 @RestController
 @RequestMapping("/api/admin/access")

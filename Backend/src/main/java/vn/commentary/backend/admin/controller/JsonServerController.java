@@ -4,12 +4,8 @@ import vn.commentary.backend.admin.service.JsonResourceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.HandlerMapping;
-import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /** Single JSON-server-compatible HTTP adapter; business/data access stays in Service and Repository layers. */
 @RestController

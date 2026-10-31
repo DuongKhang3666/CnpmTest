@@ -13,7 +13,7 @@ Tài liệu này tóm tắt các lần kiểm thử đã thực hiện (31/10/20
 | Kiểm thử tích hợp (CI) | GitHub Actions, docker compose (MySQL 8.4 + Backend) | Khởi động, quyền truy cập, đăng nhập, luồng QR -> phiên -> nội dung | Đạt |
 | Kiểm thử hệ thống với dịch máy thật | Backend + MySQL 8.0 + LibreTranslate 1.9.6 (Python 3.11), Windows 11 | Dịch, cache, đường dự phòng, bản dịch tay | Đạt (xem mục 4) |
 
-Lần chạy CI gần nhất trên nhánh `main` (commit `1fa69d4`): 4/4 job thành công (Frontend, Backend, Integration, Publish image).
+Lần chạy CI trên nhánh `main` (xem tab Actions của kho mã nguồn): 4/4 job thành công (Frontend, Backend, Integration, Publish image).
 
 ## 2. Kiểm thử tự động Backend (`mvn verify`)
 Trong CI chạy trên JDK 17 với H2 trong bộ nhớ, không cần MySQL.

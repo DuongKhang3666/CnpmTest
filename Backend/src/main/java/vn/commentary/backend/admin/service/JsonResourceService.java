@@ -1,6 +1,5 @@
 package vn.commentary.backend.admin.service;
 
-import vn.commentary.backend.admin.entity.JsonResource;
 import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import vn.commentary.backend.admin.repository.JsonResourceRepository;
 import org.springframework.stereotype.Service;

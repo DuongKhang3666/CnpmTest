@@ -13,7 +13,7 @@ services:
       - "127.0.0.1:${MYSQL_PORT:-3307}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      # Chỉ chạy khi volume còn trống (lần đầu): tạo schema rồi nạp dữ liệu mẫu từ db.json
+      # Chỉ chạy khi volume còn trống (lần đầu): tạo schema rồi nạp dữ liệu mẫu (Backend/sql/seed.sql)
       - ./Backend/src/main/resources/db/base-schema.sql:/docker-entrypoint-initdb.d/01-base-schema.sql:ro
       - ./Backend/src/main/resources/db/user-schema.sql:/docker-entrypoint-initdb.d/02-user-schema.sql:ro
       - ./Backend/sql/seed.sql:/docker-entrypoint-initdb.d/03-seed.sql:ro
