@@ -2,7 +2,7 @@ package vn.commentary.backend.user.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.commentary.backend.exception.ResourceNotFoundException;
+import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import vn.commentary.backend.user.dto.Dtos.HistoryItem;
 import vn.commentary.backend.user.dto.Dtos.HistoryRequest;
 import vn.commentary.backend.user.dto.Dtos.LikeItem;

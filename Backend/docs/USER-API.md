@@ -13,10 +13,14 @@ Controller (user/controller)  →  Service (user/service)  →  Repository (user
 
 | Lớp | Thành phần chính |
 |---|---|
-| Controller | `UserSessionController`, `UserContentController`, `UserNarrationController`, `UserDiscoveryController`, `UserActivityController`, `UserTranslateController`, `AdminAccessController` |
-| Service | `SessionService`, `AccessTokenService`, `ContentService`, `NarrationService`, `DiscoveryService`, `ActivityService`, `TranslationService`, `AccessAdminService` |
+| Controller | `UserSessionController`, `UserContentController`, `UserNarrationController`, `UserDiscoveryController`, `UserActivityController`, `UserTranslateController` |
+| Service | `SessionService`, `AccessTokenService`, `ContentService`, `NarrationService`, `DiscoveryService`, `ActivityService`, `TranslationService` |
 | Repository | `DeviceSessionRepository`, `AccessTokenRepository`, `ContentRepository`, `ListenRepository`, `UserHistoryRepository`, `UserLikeRepository`, `TranslationCacheRepository`, `SettingsRepository` |
 | Khác | `model/Models` (entity), `dto/Dtos`, `security/*` (interceptor), `translation/*` (cổng dịch), `exception/*` |
+
+Các endpoint `/api/admin/access/**` (QR, thiết bị, người đang dùng) do `AdminAccessController` / `AccessAdminService` phục vụ, nằm ở nhánh `admin` của Backend
+(cùng bộ đăng nhập quản trị); chúng đọc/ghi dữ liệu truy cập của nhánh `user`. Mã dùng chung (`NetworkPolicy`, `TokenHasher`, CORS) nằm ở `common`.
+Sơ đồ package đầy đủ: [../README.md](../README.md#kiến-trúc-mã-nguồn).
 
 ## Luồng truy cập (thay cho Socket.IO)
 

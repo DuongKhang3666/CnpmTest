@@ -12,8 +12,8 @@ import vn.commentary.backend.user.model.Models.DeviceSession;
 import vn.commentary.backend.user.repository.DeviceSessionRepository;
 import vn.commentary.backend.user.repository.SettingsRepository;
 import vn.commentary.backend.user.util.DeviceDescriber;
-import vn.commentary.backend.user.util.NetworkPolicy;
-import vn.commentary.backend.user.util.TokenHasher;
+import vn.commentary.backend.common.util.NetworkPolicy;
+import vn.commentary.backend.common.util.TokenHasher;
 
 import java.time.Clock;
 import java.time.Instant;

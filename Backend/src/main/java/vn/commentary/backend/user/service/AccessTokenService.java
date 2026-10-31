@@ -3,7 +3,7 @@ package vn.commentary.backend.user.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.commentary.backend.user.repository.AccessTokenRepository;
-import vn.commentary.backend.user.util.TokenHasher;
+import vn.commentary.backend.common.util.TokenHasher;
 
 import java.time.Clock;
 

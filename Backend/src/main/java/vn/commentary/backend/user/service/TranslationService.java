@@ -7,7 +7,7 @@ import vn.commentary.backend.user.repository.TranslationCacheRepository;
 import vn.commentary.backend.user.translation.TranslationException;
 import vn.commentary.backend.user.translation.Translator;
 import vn.commentary.backend.user.util.TextChunker;
-import vn.commentary.backend.user.util.TokenHasher;
+import vn.commentary.backend.common.util.TokenHasher;
 
 import java.time.Clock;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package vn.commentary.backend.user.service;
 
 import org.springframework.stereotype.Service;
-import vn.commentary.backend.exception.ResourceNotFoundException;
+import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import vn.commentary.backend.user.dto.Dtos.NearbyMatch;
 import vn.commentary.backend.user.dto.Dtos.ResolveResult;
 import vn.commentary.backend.user.model.Models.GeoConfig;

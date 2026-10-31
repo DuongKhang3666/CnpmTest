@@ -58,12 +58,32 @@ mvn clean spring-boot:run
 Các query filter dạng `GET /listens?date=2026-10-25&targetType=site&targetId=1&language=vi` được hỗ trợ. Mọi endpoint CRUD này đều cần đăng nhập quản trị: gọi `POST /api/admin/auth/login` để lấy token rồi gửi `Authorization: Bearer <token>` (hoặc header `X-Admin-Key` nếu đã đặt `ADMIN_API_KEY`); không có token thì trả 401.
 
 ## Kiến trúc mã nguồn
-- `controller/JsonServerController.java`: adapter HTTP theo JSON-server.
-- `service/JsonResourceService.java`: xử lý nghiệp vụ và hình dạng dữ liệu API.
-- `repository/JsonResourceRepository.java`: truy vấn MySQL an toàn theo whitelist bảng và metadata cột.
-- `entity/JsonResource.java`, `entity/ColumnDefinition.java`: mô hình dữ liệu.
-- `config/JacksonConfig.java`: khai báo `ObjectMapper` rõ ràng để tránh lỗi bean Jackson.
-- `config/DatabaseCompatibilityInitializer.java`: chỉ chuyển bảng `likes` từ placeholder sang các cột cần thiết nếu schema hiện tại đúng là bảng placeholder do JSON array rỗng tạo ra; đồng thời tạo setting mặc định nếu bảng rỗng.
+Gốc package `vn.commentary.backend` chia thành ba nhánh ngang hàng; mỗi nhánh tự chia lớp `controller → service → repository`.
+Thư mục test (`src/test/java`) phản chiếu đúng cấu trúc này.
+
+```
+vn.commentary.backend
+├─ CommentaryBackendApplication
+├─ admin/    Phía quản trị
+│   ├─ controller/  JsonServerController (CRUD kiểu json-server), AdminAuthController (đăng nhập), AdminAccessController (QR, thiết bị)
+│   ├─ service/     JsonResourceService, AdminAuthService, AccessAdminService
+│   ├─ repository/  JsonResourceRepository (truy vấn MySQL theo whitelist bảng và metadata cột)
+│   ├─ entity/      JsonResource, ColumnDefinition
+│   ├─ security/    AdminAuthInterceptor, AdminTokenService (token HMAC), LoginThrottle, AdminAuthException
+│   ├─ exception/   ApiExceptionHandler (bộ xử lý lỗi mặc định của hệ thống)
+│   └─ config/      AdminWebConfig (bắt buộc đăng nhập admin), DatabaseCompatibilityInitializer
+├─ user/     Phía người dùng cuối (`/api/user/**`), xem docs/USER-API.md
+│   ├─ controller/ service/ repository/ model/ dto/ security/ exception/ translation/ config/ util/
+└─ common/   Dùng chung cho cả hai phía
+    ├─ config/     CorsConfig + LanOnlyCorsConfiguration (CORS chỉ cho mạng nội bộ), JacksonConfig
+    ├─ exception/  ResourceNotFoundException
+    └─ util/       NetworkPolicy (nhận diện mạng nội bộ), TokenHasher (sinh/băm/so sánh token)
+```
+
+Quy ước phụ thuộc: `admin` và `user` không gọi vào nhau trừ việc `admin` quản lý dữ liệu truy cập của `user` (`AccessAdminService` dùng
+repository và `AccessTokenService` của `user`); cả hai chỉ dùng thêm `common`.
+- `common/config/JacksonConfig.java` khai báo `ObjectMapper` rõ ràng để tránh lỗi bean Jackson.
+- `admin/config/DatabaseCompatibilityInitializer.java` chỉ chuyển bảng `likes` từ placeholder sang các cột cần thiết nếu schema hiện tại đúng là bảng placeholder do JSON array rỗng tạo ra; đồng thời tạo setting mặc định nếu bảng rỗng.
 
 ## Kiểm tra nhanh
 Sau khi app báo `Started CommentaryBackendApplication`, mở `http://localhost:3000/api/user/health` (không cần đăng nhập, trả `{"ok":true,...}`). Các đường dẫn như `/sites`, `/languages` cần token quản trị nên mở trực tiếp trên trình duyệt sẽ trả 401.

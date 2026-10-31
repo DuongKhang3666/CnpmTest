@@ -2,7 +2,7 @@ package vn.commentary.backend.user.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import vn.commentary.backend.exception.ResourceNotFoundException;
+import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import vn.commentary.backend.user.dto.Dtos.NearbyMatch;
 import vn.commentary.backend.user.dto.Dtos.ResolveResult;
 import vn.commentary.backend.user.model.Models.BeaconConfig;

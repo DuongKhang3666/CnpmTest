@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import vn.commentary.backend.exception.ResourceNotFoundException;
+import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import vn.commentary.backend.user.util.DataUrl;
 
 import java.net.URI;

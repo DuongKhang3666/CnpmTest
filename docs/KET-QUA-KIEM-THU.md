@@ -7,7 +7,7 @@ Tài liệu này tóm tắt các lần kiểm thử đã thực hiện (31/10/20
 
 | Mức kiểm thử | Công cụ / môi trường | Phạm vi | Kết quả |
 |---|---|---|---|
-| Kiểm thử tự động Backend | JUnit 5, Mockito, Spring MockMvc, H2; `mvn verify` | 105 test, 17 lớp test | 105 đạt, 0 lỗi, 0 bỏ qua |
+| Kiểm thử tự động Backend | JUnit 5, Mockito, Spring MockMvc, H2; `mvn verify` | 105 test, 18 lớp test | 105 đạt, 0 lỗi, 0 bỏ qua |
 | Kiểm thử logic app mobile | Node.js (`npm test` trong `Frontend/mobile`) | Tiệm cận beacon, quét Bluetooth, quyền Android | 26 đạt, 0 lỗi |
 | Build giao diện web | Vite (`npm ci`, `vite build`) | Trang quản trị và trang hành khách | Thành công |
 | Kiểm thử tích hợp (CI) | GitHub Actions, docker compose (MySQL 8.4 + Backend) | Khởi động, quyền truy cập, đăng nhập, luồng QR -> phiên -> nội dung | Đạt |
@@ -21,11 +21,11 @@ Trong CI chạy trên JDK 17 với H2 trong bộ nhớ, không cần MySQL.
 | Nhóm | Lớp test | Số test |
 |---|---|---|
 | Xác thực quản trị | `AdminAuthServiceTest` 6, `AdminTokenServiceTest` 4, `LoginThrottleTest` 2, `AdminSecurityMockMvcTest` 5 | 17 |
-| Mạng nội bộ, CORS và interceptor phiên/quản trị | `NetworkPolicyTest` 3, `LanOnlyCorsConfigurationTest` 3, `InterceptorsTest` 2 | 8 |
+| Mạng nội bộ, CORS và interceptor phiên/quản trị | `NetworkPolicyTest` 3, `LanOnlyCorsConfigurationTest` 3, `InterceptorsTest` 2, `TokenHasherTest` 1 | 9 |
 | Xử lý lỗi HTTP | `ApiExceptionHandlerTest` | 5 |
 | API người dùng (MockMvc) | `UserApiControllerTest` | 9 |
 | Truy vấn dữ liệu (H2) | `UserRepositoriesTest` | 13 |
-| Nghiệp vụ | `SessionServiceTest` 11, `NarrationServiceTest` 11, `ContentServiceTest` 8, `TranslationServiceTest` 7, `DiscoveryServiceTest` 6, `CatalogServiceTest` 2, `UtilsTest` 8 | 53 |
+| Nghiệp vụ | `SessionServiceTest` 11, `NarrationServiceTest` 11, `ContentServiceTest` 8, `TranslationServiceTest` 7, `DiscoveryServiceTest` 6, `CatalogServiceTest` 2, `UtilsTest` 7 | 52 |
 | **Tổng** | | **105** |
 
 ## 3. Smoke test tích hợp trong CI

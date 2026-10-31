@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import vn.commentary.backend.exception.ResourceNotFoundException;
+import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import vn.commentary.backend.user.dto.Dtos.HistoryItem;
 import vn.commentary.backend.user.dto.Dtos.JoinResponse;
 import vn.commentary.backend.user.dto.Dtos.NarrationDto;

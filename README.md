@@ -21,7 +21,7 @@ Theo tài liệu yêu cầu `Prd.docx` (8 nhóm use case):
 
 ## Kiến trúc và cấu trúc thư mục
 ```
-Backend/          Spring Boot 3 lớp (Controller -> Service -> Repository), MySQL, cổng 3000
+Backend/          Spring Boot 3 lớp (Controller -> Service -> Repository), MySQL, cổng 3000; package admin / user / common
   docs/USER-API.md   API cho người dùng cuối và quản trị truy cập
   sql/seed.sql       dữ liệu mẫu (chỉ nạp vào database trống)
   sql/sample-translations.sql   bản dịch tay mẫu (tuỳ chọn)

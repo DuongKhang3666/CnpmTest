@@ -2,7 +2,7 @@ package vn.commentary.backend.user.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import vn.commentary.backend.exception.ResourceNotFoundException;
+import vn.commentary.backend.common.exception.ResourceNotFoundException;
 import vn.commentary.backend.user.model.Models.Artifact;
 import vn.commentary.backend.user.model.Models.Language;
 import vn.commentary.backend.user.model.Models.Site;
