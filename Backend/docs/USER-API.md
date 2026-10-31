@@ -91,6 +91,9 @@ curl http://localhost:3000/api/user/narrations/site/1?lang=en \
 ```
 
 Thứ tự lấy bản dịch: bản dịch admin nhập trong `narrations.translations` → cache `translation_cache` → gọi LibreTranslate.
+Văn bản thuyết minh (mô tả hoặc nội dung riêng) luôn là tiếng Việt (`sourceLanguage` = `vi`). Cột `narrations.language` là ngôn ngữ cấu hình của thuyết minh
+(ngôn ngữ mặc định khi không truyền `lang`, key TTS, ngôn ngữ của file audio), không phải ngôn ngữ của văn bản: người nghe chọn khác `vi` thì luôn được dịch,
+còn audio chỉ phát khi chọn đúng ngôn ngữ của thuyết minh.
 Nếu dịch lỗi vẫn trả văn bản gốc với `translated=false` và `translationError` (đúng luồng phụ của UC7.4).
 `audioUrl` chỉ có khi nghe đúng ngôn ngữ gốc của file audio.
 

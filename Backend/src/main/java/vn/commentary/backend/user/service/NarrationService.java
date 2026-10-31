@@ -14,6 +14,10 @@ import java.util.Optional;
 /**
  * Tạo nội dung thuyết minh cho một đối tượng theo ngôn ngữ người dùng chọn (UC7.2, UC7.3, UC7.4).
  * Thứ tự ưu tiên bản dịch: bản dịch admin đã nhập → bản dịch trong cache → dịch mới qua dịch vụ dịch.
+ * <p>
+ * Văn bản thuyết minh (mô tả hoặc nội dung riêng) luôn được soạn bằng tiếng Việt, giống giao diện admin
+ * (admin dịch từ tiếng Việt sang ngôn ngữ đã chọn). Cột {@code narrations.language} là ngôn ngữ cấu hình của
+ * thuyết minh (ngôn ngữ mặc định khi nghe, key TTS, ngôn ngữ của file audio), KHÔNG phải ngôn ngữ của văn bản.
  */
 @Service
 public class NarrationService {
@@ -36,8 +40,9 @@ public class NarrationService {
         String source = sourceText(narration.orElse(null), target);
         if (source.isBlank()) throw new ResourceNotFoundException("Chưa có nội dung thuyết minh.");
 
-        String sourceLang = narration.map(Narration::language).filter(l -> !l.isBlank()).orElse(DEFAULT_LANGUAGE);
-        String lang = requestedLanguage == null || requestedLanguage.isBlank() ? sourceLang : requestedLanguage.trim();
+        String sourceLang = DEFAULT_LANGUAGE;
+        String narrationLang = narration.map(Narration::language).filter(l -> !l.isBlank()).orElse(DEFAULT_LANGUAGE);
+        String lang = requestedLanguage == null || requestedLanguage.isBlank() ? narrationLang : requestedLanguage.trim();
         if (!TranslationService.isValidLanguage(lang)) throw new IllegalArgumentException("Mã ngôn ngữ không hợp lệ.");
 
         String text = source;
@@ -57,8 +62,9 @@ public class NarrationService {
         }
 
         String ttsKey = content.language(lang).map(Language::ttsKey).orElse(null);
-        boolean audioAvailable = narration.map(n -> n.audioEnabled() && n.hasAudio()).orElse(false) && !translated
-                && TranslationService.sameLanguage(lang, sourceLang);
+        // file audio do admin tải lên đọc bằng ngôn ngữ của thuyết minh: chỉ phát khi người nghe chọn đúng ngôn ngữ đó
+        boolean audioAvailable = narration.map(n -> n.audioEnabled() && n.hasAudio()).orElse(false)
+                && TranslationService.sameLanguage(lang, narrationLang);
         String audioUrl = audioAvailable
                 ? "/api/user/narrations/" + type.code() + "/" + targetId + "/audio" : null;
 

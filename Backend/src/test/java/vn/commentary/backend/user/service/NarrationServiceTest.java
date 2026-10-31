@@ -25,7 +25,12 @@ class NarrationServiceTest {
     private NarrationService service;
 
     private static Narration narration(boolean useDescription, String text, boolean audio, Map<String, String> tr) {
-        return new Narration(1, TargetType.SITE, 1, text, useDescription, true, audio, "a.mp3", audio, "vi", 1.5,
+        return narration("vi", useDescription, text, audio, tr);
+    }
+
+    private static Narration narration(String language, boolean useDescription, String text, boolean audio,
+                                       Map<String, String> tr) {
+        return new Narration(1, TargetType.SITE, 1, text, useDescription, true, audio, "a.mp3", audio, language, 1.5,
                 GeoConfig.disabled(), BeaconConfig.disabled(), QrConfig.disabled(), tr);
     }
 
@@ -98,6 +103,43 @@ class NarrationServiceTest {
                 .thenReturn(new TranslationService.Result("Hello", true, null));
         assertEquals("/api/user/narrations/site/1/audio", service.get(TargetType.SITE, 1, "vi").audioUrl());
         assertNull(service.get(TargetType.SITE, 1, "en").audioUrl());
+    }
+
+    @Test
+    void narrationLanguageIsNotTheLanguageOfTheText() {
+        // admin đặt "Ngôn ngữ" = en nhưng văn bản vẫn là tiếng Việt: người nghe chọn en phải nhận bản dịch, không phải tiếng Việt
+        when(content.narration(TargetType.SITE, 1L)).thenReturn(Optional.of(narration("en", true, "", false, Map.of())));
+        when(translation.translate("Mô tả địa điểm", "vi", "en"))
+                .thenReturn(new TranslationService.Result("Site description", true, null));
+        NarrationDto dto = service.get(TargetType.SITE, 1, "en");
+        assertEquals("Site description", dto.text());
+        assertTrue(dto.translated());
+        assertEquals("vi", dto.sourceLanguage());
+        // chọn tiếng Việt thì dùng nguyên văn, không gọi dịch
+        clearInvocations(translation);
+        NarrationDto vi = service.get(TargetType.SITE, 1, "vi");
+        assertEquals("Mô tả địa điểm", vi.text());
+        assertFalse(vi.translated());
+        verifyNoInteractions(translation);
+    }
+
+    @Test
+    void withoutRequestedLanguageTheNarrationLanguageIsUsed() {
+        when(content.narration(TargetType.SITE, 1L)).thenReturn(Optional.of(narration("en", true, "", false, Map.of("en", "Hand written English"))));
+        NarrationDto dto = service.get(TargetType.SITE, 1, null);
+        assertEquals("en", dto.requestedLanguage());
+        assertEquals("Hand written English", dto.text());
+    }
+
+    @Test
+    void audioFollowsTheNarrationLanguage() {
+        when(content.narration(TargetType.SITE, 1L)).thenReturn(Optional.of(narration("en", true, "", true, Map.of())));
+        when(translation.translate(anyString(), anyString(), anyString()))
+                .thenReturn(new TranslationService.Result("Hello", true, null));
+        NarrationDto en = service.get(TargetType.SITE, 1, "en");
+        assertEquals("/api/user/narrations/site/1/audio", en.audioUrl());
+        assertTrue(en.translated());
+        assertNull(service.get(TargetType.SITE, 1, "vi").audioUrl());
     }
 
     @Test
