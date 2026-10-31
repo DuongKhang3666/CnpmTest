@@ -1,8 +1,8 @@
 # Back-end user — tài liệu API
 
 Back-end user là phần Spring Boot phục vụ **người dùng cuối** (web `/user`, app mobile), tách khỏi API CRUD của admin
-(`/sites`, `/artifacts`... kiểu json-server). Thay thế hoàn toàn phần "user" của `Frontend/src/server.mjs`
-(Socket.IO cổng 3001 + `/api/translate`).
+(`/sites`, `/artifacts`... kiểu json-server). Thay thế hoàn toàn phần "user" của máy chủ Node cũ `server.mjs`
+(Socket.IO cổng 3001 + `/api/translate`; đã gỡ khỏi repo).
 
 ## Kiến trúc 3 lớp
 
@@ -195,5 +195,5 @@ docker compose up -d --build  # ở thư mục gốc: MySQL + backend (cổng 30
   Cách chạy bằng Docker (`docker compose --profile translate up`) chưa được thử trọn vẹn: cấu hình `LT_LOAD_ONLY` đã đối chiếu với mã nguồn LibreTranslate 1.9.6
   (biến môi trường = tiền tố `LT_` + tên cờ, cùng danh sách mã ngôn ngữ như cờ `--load-only` đã chạy thật), còn job CI chạy compose với `TRANSLATE_ENABLED=false`.
   Không có LibreTranslate thì trả bản gốc kèm `translated=false`.
-- Bảng `devices` cũ (json-server) không còn được cập nhật; `server.mjs` (Node) không còn cần cho trang web lẫn app mobile.
+- Bảng `devices` cũ (json-server) không còn được cập nhật; máy chủ Node cũ `server.mjs` đã được gỡ khỏi repo vì không còn cần cho trang web lẫn app mobile.
 - API admin CRUD cũ đã được bảo vệ bằng đăng nhập admin (xem *Bảo mật API quản trị*). Mật khẩu admin hiện đọc từ biến môi trường (chưa có bảng người dùng / đổi mật khẩu trên giao diện).

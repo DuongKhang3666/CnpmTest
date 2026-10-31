@@ -245,7 +245,7 @@ export function QrLoginModal({ live, onClose }) {
             {live.error || "Đang kết nối máy chủ..."}
             <br />
             <small>
-              Hãy chạy máy chủ bằng lệnh <code>npm run server</code>.
+              Hãy kiểm tra Back-end (cổng 3000) đang chạy: <code>docker compose up -d</code> hoặc <code>mvn spring-boot:run</code>.
             </small>
           </div>
         ) : info && info.ips.length === 0 ? (
