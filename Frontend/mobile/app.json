@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "Thuyết minh đa ngôn ngữ",
+    "slug": "thuyet-minh-user-native",
+    "scheme": "thuyetminh",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "vn.commentary.thuyetminh",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        },
+        "NSLocalNetworkUsageDescription": "Ứng dụng kết nối tới máy chủ thuyết minh trong cùng mạng Wi-Fi/LAN.",
+        "NSLocationWhenInUseUsageDescription": "Ứng dụng dùng vị trí của bạn để tự động thuyết minh khi bạn đến gần địa điểm hoặc hiện vật."
+      }
+    },
+    "android": {
+      "package": "vn.commentary.thuyetminh",
+      "config": {
+        "googleMaps": {
+          "apiKey": "THAY_BANG_GOOGLE_MAPS_API_KEY"
+        }
+      }
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Ứng dụng dùng vị trí của bạn để tự động thuyết minh khi bạn đến gần địa điểm hoặc hiện vật."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Ứng dụng dùng camera để quét mã QR.",
+          "recordAudioAndroid": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "react-native-ble-plx",
+        {
+          "bluetoothAlwaysPermission": "Ứng dụng dùng Bluetooth để nhận diện beacon gần bạn và tự động thuyết minh."
+        }
+      ]
+    ]
+  }
+}

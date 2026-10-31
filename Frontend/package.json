@@ -1,0 +1,26 @@
+{
+  "name": "he-thong-thuyet-minh-da-ngon-ngu",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "json": "json-server --watch db.json --host 0.0.0.0 --port 3000",
+    "server": "node src/server.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "leaflet": "latest",
+    "lucide-react": "latest",
+    "socket.io": "latest",
+    "socket.io-client": "latest",
+    "qrcode.react": "latest",
+    "json-server": "0.17.4"
+  },
+  "devDependencies": {}
+}

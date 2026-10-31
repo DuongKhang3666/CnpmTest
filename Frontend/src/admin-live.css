@@ -1,0 +1,74 @@
+/* Style cho tính năng QR đăng nhập & "Những người đang dùng" */
+
+.live-clickable { cursor: pointer; transition: box-shadow .15s, transform .15s; }
+.live-clickable:hover { box-shadow: 0 6px 18px rgba(71,128,255,.18); transform: translateY(-1px); }
+
+.live-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+
+/* Modal */
+.live-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(15, 23, 42, .5); padding: 16px;
+}
+.live-modal {
+  position: relative; width: 100%; max-width: 420px; max-height: 92vh; overflow: auto;
+  background: #fff; border-radius: 16px; padding: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.live-modal h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px; color: #111827; }
+.live-close {
+  position: absolute; top: 14px; right: 14px; border: 0; background: #f3f4f6;
+  width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.live-muted { margin: 0; color: #6b7280; font-size: 13px; line-height: 1.5; }
+.live-qr {
+  align-self: center; background: #fff; padding: 14px;
+  border: 1px solid #e5e7eb; border-radius: 14px; line-height: 0;
+}
+.live-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #374151; }
+.live-field span { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.live-field select { padding: 9px 10px; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; }
+.live-url {
+  display: flex; align-items: center; gap: 8px; background: #f3f4f6;
+  border-radius: 10px; padding: 8px 8px 8px 12px;
+}
+.live-url code { flex: 1; font-size: 12px; word-break: break-all; color: #111827; user-select: all; }
+.live-url button, .live-secondary {
+  display: inline-flex; align-items: center; gap: 6px; border: 1px solid #d1d5db;
+  background: #fff; border-radius: 8px; padding: 7px 12px; font: inherit; font-size: 13px;
+  cursor: pointer; color: #111827; white-space: nowrap;
+}
+.live-url button:hover, .live-secondary:hover:not(:disabled) { background: #f9fafb; }
+.live-secondary:disabled { opacity: .5; cursor: not-allowed; }
+.live-alert {
+  background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;
+  border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.5;
+}
+.live-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+
+/* Badge trạng thái */
+.live-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+  border-radius: 999px; font-size: 12px; font-weight: 600;
+}
+.live-badge.online { background: #dcfce7; color: #166534; }
+.live-badge.offline { background: #f3f4f6; color: #6b7280; }
+
+/* Bảng thiết bị */
+.live-table-panel { padding: 0; overflow: hidden; }
+.live-table-heading {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid #eef0f3;
+}
+.live-table-scroll { overflow-x: auto; }
+.live-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.live-table th {
+  text-align: left; padding: 10px 20px; color: #6b7280; font-weight: 600;
+  background: #f9fafb; white-space: nowrap;
+}
+.live-table td { padding: 12px 20px; border-top: 1px solid #f1f3f5; vertical-align: middle; }
+.live-table td small { display: block; color: #6b7280; margin-top: 2px; }
+.live-empty { padding: 36px 20px; text-align: center; color: #6b7280; font-size: 14px; }

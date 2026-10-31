@@ -1,0 +1,151 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main, master]
+    paths: ["Backend/**", "Frontend/**", "docker-compose.yml", ".github/workflows/**"]
+  pull_request:
+    paths: ["Backend/**", "Frontend/**", "docker-compose.yml", ".github/workflows/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # 0) Build giao diện web (admin + hành khách) để bắt lỗi import/JSX sớm
+  frontend:
+    name: Frontend - build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  # 1) Biên dịch + chạy toàn bộ test (unit, MockMvc, repository với H2)
+  backend:
+    name: Backend - build & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: Backend/pom.xml
+      - name: Build & test
+        run: mvn -B -ntp verify
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: Backend/target/surefire-reports
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: commentary-backend-jar
+          path: Backend/target/commentary-backend.jar
+
+  # 2) Dựng toàn bộ hệ thống bằng docker compose (MySQL + schema + seed + backend) và gọi thử API
+  integration:
+    name: Integration - docker compose smoke test
+    needs: backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start stack
+        run: docker compose up -d --build mysql backend
+      - name: Wait for backend
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:3000/api/user/health >/dev/null 2>&1; then echo "backend ready"; exit 0; fi
+            sleep 5
+          done
+          echo "backend did not become ready"; docker compose logs --tail=200; exit 1
+      - name: Smoke test API
+        run: |
+          set -e
+          curl -fsS http://localhost:3000/api/user/health
+          curl -fsS http://localhost:3000/sites | head -c 300; echo
+          # chưa có phiên thì API user phải từ chối
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/user/sites)
+          test "$code" = "401"
+          # lấy token QR, vào hệ thống rồi đọc nội dung
+          QR=$(curl -fsS http://localhost:3000/api/admin/access/qr | python3 -c 'import sys,json;print(json.load(sys.stdin)["token"])')
+          JOIN=$(curl -fsS -X POST http://localhost:3000/api/user/session/join -H 'Content-Type: application/json' \
+            -d "{\"token\":\"$QR\",\"deviceId\":\"ci-device-0001\",\"info\":{\"clientType\":\"web\"}}")
+          TOKEN=$(echo "$JOIN" | python3 -c 'import sys,json;print(json.load(sys.stdin)["sessionToken"])')
+          curl -fsS http://localhost:3000/api/user/sites -H "X-Device-Id: ci-device-0001" -H "X-Session-Token: $TOKEN" | head -c 300; echo
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --tail=300
+      - name: Stop stack
+        if: always()
+        run: docker compose down -v
+
+  # 3) Đẩy image lên GitHub Container Registry khi merge vào nhánh chính
+  publish:
+    name: Publish Docker image
+    needs: [backend, integration, frontend]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/backend
+          tags: |
+            type=sha
+            type=raw,value=latest
+      - uses: docker/build-push-action@v6
+        with:
+          context: Backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # 4) (Tuỳ chọn) Triển khai lên máy chủ qua SSH. Bật bằng biến repository DEPLOY_ENABLED=true
+  #    và secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY. Máy chủ cần có docker compose và file docker-compose.yml.
+  deploy:
+    name: Deploy (optional)
+    needs: publish
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd ~/commentary
+            docker compose pull backend || true
+            docker compose up -d --build

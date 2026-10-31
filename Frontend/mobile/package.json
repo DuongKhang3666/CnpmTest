@@ -1,0 +1,37 @@
+{
+  "name": "thuyet-minh-user-native",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "web": "expo start --web",
+    "test": "node tests/proximity.test.mjs"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-community/netinfo": "12.0.1",
+    "expo": "^58.0.19",
+    "expo-audio": "~58.0.10",
+    "expo-build-properties": "~58.0.11",
+    "expo-camera": "~58.0.12",
+    "expo-constants": "~58.0.13",
+    "expo-linking": "~58.0.14",
+    "expo-location": "~58.0.19",
+    "expo-router": "~58.0.26",
+    "expo-speech": "~58.0.3",
+    "expo-status-bar": "~58.0.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-ble-plx": "3.5.1",
+    "react-native-maps": "1.29.11",
+    "react-native-safe-area-context": "~5.10.1",
+    "react-native-screens": "~4.30.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "typescript": "~6.0.3"
+  }
+}
