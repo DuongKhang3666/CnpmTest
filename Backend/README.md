@@ -1,6 +1,6 @@
 # Commentary Backend — Spring Boot / MySQL
 
-Backend viết lại theo hướng đối tượng, chia lớp `Controller -> Service -> Repository`, tương thích các đường dẫn JSON-server mà `Frontend/src/api.jsx` đang gọi. Mặc định chạy cổng **3000** để không cần sửa `JSON_SERVER_URL` trong `src/config.js` và không đụng đến Socket.IO hiện có ở cổng 3001.
+Backend viết lại theo hướng đối tượng, chia lớp `Controller -> Service -> Repository`, tương thích các đường dẫn JSON-server mà `Frontend/src/api.jsx` (trang quản trị) đang gọi, kèm nhóm `/api/user/**` cho hành khách. Mặc định chạy cổng **3000**. Hướng dẫn chạy toàn bộ hệ thống: [README gốc](../README.md).
 
 ## Yêu cầu
 - JDK 17+
@@ -13,6 +13,10 @@ Mặc định kết nối `jdbc:mysql://localhost:3306/commentary_db`, user `roo
 - `DB_USERNAME`
 - `DB_PASSWORD`
 - `SERVER_PORT` (mặc định 3000)
+- `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_TOKEN_SECRET` (>= 16 ký tự ngẫu nhiên): tài khoản và khoá ký token đăng nhập quản trị. Để trống `ADMIN_PASSWORD` thì Backend sinh mật khẩu ngẫu nhiên và in ra log
+- `ADMIN_API_KEY` (tuỳ chọn, cho script/CI gọi API quản trị qua header `X-Admin-Key`)
+- `PUBLIC_HOST`, `USER_LAN_ONLY`, `CORS_ALLOWED_ORIGINS`: địa chỉ đưa vào link QR, giới hạn mạng nội bộ, nguồn CORS bổ sung
+- `TRANSLATE_ENABLED`, `LIBRETRANSLATE_URL`: dịch máy (xem `.env.example` ở thư mục gốc)
 
 ## Chạy trên Windows PowerShell
 Mở PowerShell tại thư mục có `pom.xml`:
@@ -51,7 +55,7 @@ mvn clean spring-boot:run
 | GET | `/settings` | Đọc cấu hình dạng object `{ "accessHours": 24 }` |
 | PUT/PATCH | `/settings` | Cập nhật cấu hình singleton |
 
-Các query filter dạng `GET /listens?date=2026-10-25&targetType=site&targetId=1&language=vi` được hỗ trợ. Endpoint CRUD không yêu cầu JWT/token.
+Các query filter dạng `GET /listens?date=2026-10-25&targetType=site&targetId=1&language=vi` được hỗ trợ. Mọi endpoint CRUD này đều cần đăng nhập quản trị: gọi `POST /api/admin/auth/login` để lấy token rồi gửi `Authorization: Bearer <token>` (hoặc header `X-Admin-Key` nếu đã đặt `ADMIN_API_KEY`); không có token thì trả 401.
 
 ## Kiến trúc mã nguồn
 - `controller/JsonServerController.java`: adapter HTTP theo JSON-server.
@@ -62,10 +66,7 @@ Các query filter dạng `GET /listens?date=2026-10-25&targetType=site&targetId=
 - `config/DatabaseCompatibilityInitializer.java`: chỉ chuyển bảng `likes` từ placeholder sang các cột cần thiết nếu schema hiện tại đúng là bảng placeholder do JSON array rỗng tạo ra; đồng thời tạo setting mặc định nếu bảng rỗng.
 
 ## Kiểm tra nhanh
-Sau khi app báo `Started CommentaryBackendApplication`, mở:
-- `http://localhost:3000/sites`
-- `http://localhost:3000/languages`
-- `http://localhost:3000/listens?date=2026-10-25&targetType=site&targetId=1&language=vi`
+Sau khi app báo `Started CommentaryBackendApplication`, mở `http://localhost:3000/api/user/health` (không cần đăng nhập, trả `{"ok":true,...}`). Các đường dẫn như `/sites`, `/languages` cần token quản trị nên mở trực tiếp trên trình duyệt sẽ trả 401.
 
 Nếu app không khởi động, xem dòng `Caused by` đầu tiên trong log. Nếu báo `Access denied` hoặc `Unknown database`, kiểm tra MySQL và `commentary_db`; đây là lỗi cấu hình/kết nối DB, không phải lỗi biên dịch Java.
 

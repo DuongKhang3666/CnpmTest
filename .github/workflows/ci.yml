@@ -32,6 +32,9 @@ jobs:
           cache-dependency-path: Frontend/package-lock.json
       - run: npm ci
       - run: npm run build
+      - name: Test logic app mobile (không cần cài thư viện)
+        working-directory: Frontend/mobile
+        run: npm test
 
   # 1) Biên dịch + chạy toàn bộ test (unit, MockMvc, repository với H2)
   backend:
