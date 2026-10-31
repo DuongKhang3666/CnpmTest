@@ -32,9 +32,13 @@ jobs:
           cache-dependency-path: Frontend/package-lock.json
       - run: npm ci
       - run: npm run build
-      - name: Test logic app mobile (không cần cài thư viện)
+      # Test logic app mobile chỉ cần trình biên dịch TypeScript (cùng phiên bản với package-lock của app),
+      # nên cài riêng ra thư mục tạm thay vì cài toàn bộ thư viện Expo/React Native.
+      - name: Test logic app mobile
         working-directory: Frontend/mobile
-        run: npm test
+        run: |
+          npm install --prefix "$RUNNER_TEMP/ts" typescript@6.0.3 --no-audit --no-fund --loglevel=error
+          NODE_PATH="$RUNNER_TEMP/ts/node_modules" npm test
 
   # 1) Biên dịch + chạy toàn bộ test (unit, MockMvc, repository với H2)
   backend:
