@@ -1116,7 +1116,7 @@ export default function User() {
                 <b>{ui("addressLabel")}</b> {translatedField(detail, "address", detail.address || "Đang cập nhật")}
               </p>
               <p>
-                <b>{ui("cityLabel")}</b> {translatedField(detail, "address", detail.city || "Đang cập nhật")}
+                <b>{ui("cityLabel")}</b> {translatedField(detail, "city", detail.city || "Đang cập nhật")}
               </p>
               <p>
                 <b>{ui("plays")}</b> {detail.totalListens || 0}
