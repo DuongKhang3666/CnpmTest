@@ -67,6 +67,12 @@ jobs:
     name: Integration - docker compose smoke test
     needs: backend
     runs-on: ubuntu-latest
+    env:
+      # Thông tin CHỈ dùng trong CI (stack bị xóa sau khi chạy xong), không phải mật khẩu thật.
+      ADMIN_EMAIL: ci-admin@example.com
+      ADMIN_PASSWORD: ci-admin-password-2026
+      ADMIN_TOKEN_SECRET: ci-token-secret-0123456789abcdef
+      TRANSLATE_ENABLED: "false"
     steps:
       - uses: actions/checkout@v4
       - name: Start stack
@@ -82,12 +88,21 @@ jobs:
         run: |
           set -e
           curl -fsS http://localhost:3000/api/user/health
-          curl -fsS http://localhost:3000/sites | head -c 300; echo
+          # API quản trị cũ phải đòi đăng nhập: không token -> 401 (cả đọc lẫn ghi)
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/sites)" = "401"
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X DELETE http://localhost:3000/sites/1)" = "401"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/admin/access/qr)" = "401"
+          # sai mật khẩu bị từ chối, tài khoản demo cũ không còn dùng được
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:3000/api/admin/auth/login -H 'Content-Type: application/json' -d '{"email":"admin@gmail.com","password":"123456"}')" = "401"
+          # đăng nhập admin
+          ADMIN=$(curl -fsS -X POST http://localhost:3000/api/admin/auth/login -H 'Content-Type: application/json' \
+            -d '{"email":"ci-admin@example.com","password":"ci-admin-password-2026"}' | python3 -c 'import sys,json;print(json.load(sys.stdin)["token"])')
+          curl -fsS http://localhost:3000/sites -H "Authorization: Bearer $ADMIN" | head -c 300; echo
           # chưa có phiên thì API user phải từ chối
           code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/user/sites)
           test "$code" = "401"
           # lấy token QR, vào hệ thống rồi đọc nội dung
-          QR=$(curl -fsS http://localhost:3000/api/admin/access/qr | python3 -c 'import sys,json;print(json.load(sys.stdin)["token"])')
+          QR=$(curl -fsS http://localhost:3000/api/admin/access/qr -H "Authorization: Bearer $ADMIN" | python3 -c 'import sys,json;print(json.load(sys.stdin)["token"])')
           JOIN=$(curl -fsS -X POST http://localhost:3000/api/user/session/join -H 'Content-Type: application/json' \
             -d "{\"token\":\"$QR\",\"deviceId\":\"ci-device-0001\",\"info\":{\"clientType\":\"web\"}}")
           TOKEN=$(echo "$JOIN" | python3 -c 'import sys,json;print(json.load(sys.stdin)["sessionToken"])')
